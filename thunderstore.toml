@@ -5,7 +5,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "zerp"
 name = "SlowdownFix"
-versionNumber = "1.4.2"
+versionNumber = "0.0.1"
 description = "Potential workaround/mitigation for the random semi-permanent slowdown that sometimes happens for unknown reasons. Avoid using this if you don't encounter this issue."
 websiteUrl = "https://github.com/adi1998/H2-SlowdownFix"
 containsNsfwContent = false
