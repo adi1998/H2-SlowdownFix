@@ -41,6 +41,27 @@ public.config = config -- so other mods can access our config
 local function on_ready()
     -- what to do when we are ready, but not re-do on reload.
     mod = modutil.mod.Mod.Register(_PLUGIN.guid)
+
+    function mod.dump(o, depth, max_depth)
+        max_depth = max_depth or 4
+        depth = depth or 0
+        if depth == max_depth then
+            return tostring(o)
+        end
+        if type(o) == 'table' then
+            local s = "\n" .. string.rep("\t", depth) .. '{\n'
+            for k,v in pairs(o) do
+                if type(k) == 'number' then k = '['..k..']' end
+                s = s .. string.rep("\t",(depth+1)) .. k .. ' = ' .. mod.dump(v, depth + 1, max_depth) .. ',\n'
+            end
+            return s .. string.rep("\t", depth) .. '}'
+        elseif type(o) == "string" then
+            return "\"" .. o .. "\""
+        else
+            return tostring(o)
+        end
+    end
+
     import "ready.lua"
 end
 

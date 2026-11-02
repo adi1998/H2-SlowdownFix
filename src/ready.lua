@@ -8,7 +8,7 @@ local function clear_engine_simspeed_values()
         local world_mSpeedModifierTarget = world_ptr:add(0x34)
         local world_mSpeedModifierChangeSpeed = world_ptr:add(0x38)
 
-        print(world_mSpeedModifier:get_float(),
+        print("Before memory write", world_mSpeedModifier:get_float(),
             world_mSpeedModifierTarget:get_float(),
             world_mSpeedModifierChangeSpeed:get_float()
         )
@@ -17,7 +17,7 @@ local function clear_engine_simspeed_values()
         world_mSpeedModifierTarget:set_float(1.0)
         world_mSpeedModifierChangeSpeed:set_float(999.0)
 
-        print(world_mSpeedModifier:get_float(),
+        print("After memory write", world_mSpeedModifier:get_float(),
             world_mSpeedModifierTarget:get_float(),
             world_mSpeedModifierChangeSpeed:get_float()
         )
@@ -26,10 +26,23 @@ end
 
 modutil.mod.Path.Wrap("LeaveRoom", function (base, ...)
     game.AdjustSimulationSpeed({ Fraction = 1.0, LerpTime = 0 })
+    print("Before force clear speed state",
+        mod.dump(game.SessionState.GameplaySlows),
+        mod.dump(game.SessionState.PlayerGameplaySlows),
+        mod.dump(game._G.SessionState.GameplaySlows),
+        mod.dump(game._G.SessionState.PlayerGameplaySlows)
+    )
     game.SessionState.GameplaySlows = {}
     game.SessionState.PlayerGameplaySlows = {}
     game._G.SessionState.GameplaySlows = {}
     game._G.SessionState.PlayerGameplaySlows = {}
     clear_engine_simspeed_values()
-    return base(...)
+    local retval =  base(...)
+    print("After force clear speed state",
+        mod.dump(game.SessionState.GameplaySlows),
+        mod.dump(game.SessionState.PlayerGameplaySlows),
+        mod.dump(game._G.SessionState.GameplaySlows),
+        mod.dump(game._G.SessionState.PlayerGameplaySlows)
+    )
+    return retval
 end)
